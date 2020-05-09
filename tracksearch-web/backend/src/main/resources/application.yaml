@@ -1,0 +1,8 @@
+server:
+  port: 8040
+
+logging:
+  level:
+    io.sfrei.tracksearch: INFO
+    io.sfrei.tracksearch_web: DEBUG
+    ch.qos.logback: ERROR
