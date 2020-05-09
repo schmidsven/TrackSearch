@@ -13,7 +13,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class TrackSearchClient implements MultiTrackSearchClient{
-
+    
     private final MultiTrackSearchClient trackSearchClient;
 
     @Override
