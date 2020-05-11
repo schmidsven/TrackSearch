@@ -19,7 +19,7 @@
 
     <modules>
         <module>library</module>
-        <module>tracksearch-web</module>
+        <module>web</module>
     </modules>
 
     <properties>
