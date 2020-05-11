@@ -17,22 +17,37 @@ public class TrackSearchController {
     private final TrackSearchService trackSearchService;
 
     @GetMapping("/search")
-    public TrackContainer getTracksForSearch(@RequestParam(name = "keyWords") String search) throws TrackSearchException {
+    public TrackContainer getTracksForSearch(@RequestParam(name = "keyWords") String search)
+            throws TrackSearchException {
+
         return trackSearchService.getTracksForSearch(search);
     }
 
     @GetMapping("/tracklist")
-    public TrackContainer getTracklistById(@RequestParam(name = "id") long trackContainerId) throws EntityNotFoundException {
+    public TrackContainer getTracklistById(@RequestParam(name = "id") long trackContainerId)
+            throws EntityNotFoundException {
+
         return trackSearchService.getTrackContainerById(trackContainerId);
     }
 
+    @GetMapping("/tracklist/next")
+    public TrackContainer getNextTracksForTracklistId(@RequestParam(name = "id") long trackContainerId)
+            throws EntityNotFoundException, TrackSearchException {
+
+        return trackSearchService.getNext(trackContainerId);
+    }
+
     @GetMapping("/track")
-    public PersistentTrack getTrackById(@RequestParam(name = "id") long persistentTrackId) throws EntityNotFoundException {
+    public PersistentTrack getTrackById(@RequestParam(name = "id") long persistentTrackId)
+            throws EntityNotFoundException {
+
         return trackSearchService.getPersistentTrackById(persistentTrackId);
     }
 
-    @GetMapping("/stream")
-    public String getStreamUrl(@RequestParam(name = "trackId") long persistentTrackId) throws TrackSearchException, EntityNotFoundException {
+    @GetMapping("/track/stream")
+    public String getStreamUrlForTrackId(@RequestParam(name = "id") long persistentTrackId)
+            throws TrackSearchException, EntityNotFoundException {
+
         return trackSearchService.getStreamUrl(persistentTrackId);
     }
 

@@ -1,10 +1,7 @@
 package io.sfrei.tracksearch_web.services;
 
 import io.sfrei.tracksearch.clients.setup.TrackSource;
-import io.sfrei.tracksearch.tracks.SoundCloudTrack;
-import io.sfrei.tracksearch.tracks.Track;
-import io.sfrei.tracksearch.tracks.TrackList;
-import io.sfrei.tracksearch.tracks.YouTubeTrack;
+import io.sfrei.tracksearch.tracks.*;
 import io.sfrei.tracksearch_web.entities.PersistentTrack;
 import io.sfrei.tracksearch_web.entities.QueryInformation;
 import io.sfrei.tracksearch_web.entities.TrackContainer;
@@ -15,6 +12,7 @@ import io.sfrei.tracksearch_web.repositories.TrackRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,9 +27,7 @@ public class PersistenceService {
     private final TrackRepo trackRepo;
 
     public TrackContainer saveTrackContainer(TrackList<? extends Track> trackList) {
-        Set<QueryInformation> queryInformation = serializeQueryInformation(trackList.getQueryInformation());
-        Set<PersistentTrack> tracks = serializeTracks(trackList.getTracks());
-        return trackContainerRepo.save(new TrackContainer(queryInformation, tracks));
+        return trackContainerRepo.save(serializeTrackList(trackList));
     }
 
     public TrackContainer getTrackContainerById(long id) throws EntityNotFoundException {
@@ -44,16 +40,45 @@ public class PersistenceService {
                 new EntityNotFoundException("Track with id: " + id + " does not exist"));
     }
 
+    private TrackContainer serializeTrackList(TrackList<? extends Track> trackList) {
+        Set<PersistentTrack> tracks = serializeTracks(trackList.getTracks());
+        Set<QueryInformation> queryInformation = serializeQueryInformation(trackList.getQueryInformation());
+        return new TrackContainer(tracks, trackList.getQueryType(), queryInformation);
+    }
+
+    public TrackList<? extends Track> deserializeTrackListInformation(TrackContainer trackContainer) {
+        Map<String, String> queryInformation = deserializeQueryInformation(trackContainer.getQueryInformation());
+        return new BaseTrackList<>(new ArrayList<>(), trackContainer.getQueryType(), queryInformation);
+    }
+
+    @SuppressWarnings("unused")
+    private TrackList<? extends Track> deserializeTrackList(TrackContainer trackContainer) {
+        List<Track> tracks =deserializeTracks(trackContainer.getTracks());
+        Map<String, String> queryInformation = deserializeQueryInformation(trackContainer.getQueryInformation());
+
+        return new BaseTrackList<>(tracks, trackContainer.getQueryType(), queryInformation);
+    }
+
     private Set<QueryInformation> serializeQueryInformation(Map<String, String> queryInformation) {
         return queryInformation.entrySet().stream()
                 .map(entry -> getOrCreateQueryInformation(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toSet());
     }
 
+    private Map<String, String> deserializeQueryInformation(Set<QueryInformation> queryInformation) {
+        return queryInformation.stream().collect(Collectors.toMap(QueryInformation::getKey, QueryInformation::getValue));
+    }
+
     private Set<PersistentTrack> serializeTracks(List<? extends Track> tracks) {
         return tracks.stream()
                 .map(this::getOrCreatePersistentTrack)
                 .collect(Collectors.toSet());
+    }
+
+    private List<Track> deserializeTracks(Set<PersistentTrack> tracks) {
+        return tracks.stream()
+                .map(this::deserializeTrack)
+                .collect(Collectors.toList());
     }
 
     public Track deserializeTrack(PersistentTrack persistentTrack) {

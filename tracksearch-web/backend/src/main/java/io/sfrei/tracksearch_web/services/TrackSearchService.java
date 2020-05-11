@@ -23,6 +23,12 @@ public class TrackSearchService {
         return persistenceService.saveTrackContainer(trackList);
     }
 
+    public TrackContainer getNext(long trackContainerId) throws EntityNotFoundException, TrackSearchException {
+        TrackContainer lastTrackContainer = persistenceService.getTrackContainerById(trackContainerId);
+        TrackList<? extends Track> trackList = persistenceService.deserializeTrackListInformation(lastTrackContainer);
+        return persistenceService.saveTrackContainer(trackSearchClient.getNext(trackList));
+    }
+
     public TrackContainer getTrackContainerById(long trackContainerId) throws EntityNotFoundException {
         return persistenceService.getTrackContainerById(trackContainerId);
     }

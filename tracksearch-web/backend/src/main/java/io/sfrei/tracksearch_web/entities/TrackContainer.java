@@ -1,6 +1,7 @@
 package io.sfrei.tracksearch_web.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.sfrei.tracksearch.clients.setup.QueryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,8 @@ public class TrackContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private QueryType queryType;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
@@ -37,9 +40,10 @@ public class TrackContainer {
                             nullable = false, updatable = false)})
     private Set<PersistentTrack> tracks;
 
-    public TrackContainer(Set<QueryInformation> queryInformation, Set<PersistentTrack> tracks) {
-        this.queryInformation = queryInformation;
+    public TrackContainer(Set<PersistentTrack> tracks, QueryType queryType, Set<QueryInformation> queryInformation) {
         this.tracks = tracks;
+        this.queryType = queryType;
+        this.queryInformation = queryInformation;
     }
 
 }
