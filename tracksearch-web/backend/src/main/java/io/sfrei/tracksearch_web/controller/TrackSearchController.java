@@ -1,6 +1,7 @@
 package io.sfrei.tracksearch_web.controller;
 
 import io.sfrei.tracksearch.exceptions.TrackSearchException;
+import io.sfrei.tracksearch_web.entities.PersistentTrack;
 import io.sfrei.tracksearch_web.entities.TrackContainer;
 import io.sfrei.tracksearch_web.exceptions.EntityNotFoundException;
 import io.sfrei.tracksearch_web.services.TrackSearchService;
@@ -21,8 +22,18 @@ public class TrackSearchController {
     }
 
     @GetMapping("/tracklist")
-    public TrackContainer getTracklistById(long id) throws EntityNotFoundException {
-        return trackSearchService.getTrackContainerById(id);
+    public TrackContainer getTracklistById(@RequestParam(name = "id") long trackContainerId) throws EntityNotFoundException {
+        return trackSearchService.getTrackContainerById(trackContainerId);
+    }
+
+    @GetMapping("/track")
+    public PersistentTrack getTrackById(@RequestParam(name = "id") long persistentTrackId) throws EntityNotFoundException {
+        return trackSearchService.getPersistentTrackById(persistentTrackId);
+    }
+
+    @GetMapping("/stream")
+    public String getStreamUrl(@RequestParam(name = "trackId") long persistentTrackId) throws TrackSearchException, EntityNotFoundException {
+        return trackSearchService.getStreamUrl(persistentTrackId);
     }
 
 }

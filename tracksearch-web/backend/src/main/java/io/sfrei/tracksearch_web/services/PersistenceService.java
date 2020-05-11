@@ -1,7 +1,10 @@
 package io.sfrei.tracksearch_web.services;
 
+import io.sfrei.tracksearch.clients.setup.TrackSource;
+import io.sfrei.tracksearch.tracks.SoundCloudTrack;
 import io.sfrei.tracksearch.tracks.Track;
 import io.sfrei.tracksearch.tracks.TrackList;
+import io.sfrei.tracksearch.tracks.YouTubeTrack;
 import io.sfrei.tracksearch_web.entities.PersistentTrack;
 import io.sfrei.tracksearch_web.entities.QueryInformation;
 import io.sfrei.tracksearch_web.entities.TrackContainer;
@@ -36,6 +39,11 @@ public class PersistenceService {
                 new EntityNotFoundException("TrackContainer with id: " + id + " does not exist"));
     }
 
+    public PersistentTrack getPersistentTrackById(long id) throws EntityNotFoundException {
+        return trackRepo.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Track with id: " + id + " does not exist"));
+    }
+
     private Set<QueryInformation> serializeQueryInformation(Map<String, String> queryInformation) {
         return queryInformation.entrySet().stream()
                 .map(entry -> getOrCreateQueryInformation(entry.getKey(), entry.getValue()))
@@ -46,6 +54,19 @@ public class PersistenceService {
         return tracks.stream()
                 .map(this::getOrCreatePersistentTrack)
                 .collect(Collectors.toSet());
+    }
+
+    public Track deserializeTrack(PersistentTrack persistentTrack) {
+        TrackSource source = persistentTrack.getSource();
+
+        Track track;
+        if (source.equals(TrackSource.Youtube)) {
+            track = new YouTubeTrack(persistentTrack.getTitle(), persistentTrack.getLength(), persistentTrack.getUrl());
+        } else  {
+            track = new SoundCloudTrack(persistentTrack.getTitle(), persistentTrack.getLength(), persistentTrack.getUrl());
+        }
+
+        return track;
     }
 
     private QueryInformation getOrCreateQueryInformation(String key, String value) {
