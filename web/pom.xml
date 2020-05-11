@@ -12,6 +12,7 @@
 
     <packaging>pom</packaging>
 
+    <name>Track Search Web Parent</name>
     <artifactId>tracksearch-web-parent</artifactId>
 
     <modules>

@@ -10,6 +10,7 @@
         <version>0.6.0-SNAPSHOT</version>
     </parent>
 
+    <name>Track Search Web Frontend</name>
     <artifactId>tracksearch-web-frontend</artifactId>
 
 </project>
