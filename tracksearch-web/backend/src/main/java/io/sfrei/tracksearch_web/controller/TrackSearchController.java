@@ -1,7 +1,7 @@
 package io.sfrei.tracksearch_web.controller;
 
 import io.sfrei.tracksearch.exceptions.TrackSearchException;
-import io.sfrei.tracksearch_web.entities.TracksContainer;
+import io.sfrei.tracksearch_web.entities.TrackContainer;
 import io.sfrei.tracksearch_web.exceptions.EntityNotFoundException;
 import io.sfrei.tracksearch_web.services.TrackSearchService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,13 @@ public class TrackSearchController {
     private final TrackSearchService trackSearchService;
 
     @GetMapping("/search")
-    public TracksContainer getTracksForSearch(@RequestParam(name = "keyWords") String search) throws TrackSearchException {
+    public TrackContainer getTracksForSearch(@RequestParam(name = "keyWords") String search) throws TrackSearchException {
         return trackSearchService.getTracksForSearch(search);
     }
 
     @GetMapping("/tracklist")
-    public TracksContainer getTracklistById(Long id) throws EntityNotFoundException {
-        //TODO: Fix empty collections
-        return trackSearchService.getById(id);
+    public TrackContainer getTracklistById(long id) throws EntityNotFoundException {
+        return trackSearchService.getTrackContainerById(id);
     }
 
 }

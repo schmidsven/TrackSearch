@@ -1,5 +1,6 @@
 package io.sfrei.tracksearch_web.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.sfrei.tracksearch.clients.setup.TrackSource;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,20 +21,20 @@ public class PersistentTrack {
 
     private String title;
 
+    private String cleanTitle;
+
     private Long length;
     
     private String url;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "tracklist_tracks",
-            joinColumns = @JoinColumn(name = "tracklist_id"),
-            inverseJoinColumns = @JoinColumn(name = "track_id"))
-    private Set<TracksContainer> trackContainers;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "tracks", fetch = FetchType.LAZY)
+    private Set<TrackContainer> trackContainers;
 
-    public PersistentTrack(TrackSource source, String title, Long length, String url) {
+    public PersistentTrack(TrackSource source, String title, String cleanTitle, Long length, String url) {
         this.source = source;
         this.title = title;
+        this.cleanTitle = cleanTitle;
         this.length = length;
         this.url = url;
     }

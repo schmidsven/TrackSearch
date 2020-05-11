@@ -1,5 +1,6 @@
 package io.sfrei.tracksearch_web.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,14 +18,12 @@ public class QueryInformation {
 
     private String key;
 
+    @Column(length = 1024)
     private String value;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "tracklist_infos",
-            joinColumns = @JoinColumn(name = "tracklist_id"),
-            inverseJoinColumns = @JoinColumn(name = "info_id"))
-    private Set<TracksContainer> trackContainers;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "queryInformation", fetch = FetchType.LAZY)
+    private Set<TrackContainer> trackContainers;
 
     public QueryInformation(String key, String value) {
         this.key = key;
