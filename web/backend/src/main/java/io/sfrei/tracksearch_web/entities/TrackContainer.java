@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Set;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Getter
 @Entity
 @NoArgsConstructor
